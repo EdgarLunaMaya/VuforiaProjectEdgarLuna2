@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.Events;
 using UnityEngine;
 
 public class DanceManager : MonoBehaviour
@@ -9,10 +10,14 @@ public class DanceManager : MonoBehaviour
    private String[] songNames;
    [SerializeField]
    private Animator character;
+   [SerializeField]
+   private UnityEvent<Transform> OnDanceStart;
+
    private int currentDanceIndex = 0;
 
    public void PlayNextDance()
    {
+      OnDanceStart?.Invoke(character.transform);
       SoundManager.instance.PlayMusic(songNames[currentDanceIndex]);
       character.Play(danceNames[currentDanceIndex]);
       currentDanceIndex++;
