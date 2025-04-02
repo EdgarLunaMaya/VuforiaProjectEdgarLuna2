@@ -50,6 +50,10 @@ public class BattleManager : MonoBehaviour
     }
     private IEnumerator Attack()
     {
+        if (!isBattleActive)
+        {
+            yield break;
+        }
         currentFightIndex = Random.Range(0, fighters.Count);
         Fighter attacker = fighters[currentFightIndex];
         Fighter defender;
@@ -60,7 +64,11 @@ public class BattleManager : MonoBehaviour
         }
         while (attacker == defender);
 
+        attacker.transform.LookAt(defender.transform.position);
+        defender.transform.LookAt(attacker.transform.position);
+
         attacker.Attack();
+        yield return new WaitForSeconds (attacker.AttackDuration);
         float damage = attacker.GetDamage();
         defender.GetComponent<Health>().TakeDamage(damage);
 
@@ -76,6 +84,7 @@ public class BattleManager : MonoBehaviour
     }
     private void StopBattle()
     {
+        isBattleActive = false;
         StopCoroutine(Attack());
         onBattleStop?.Invoke();
     }

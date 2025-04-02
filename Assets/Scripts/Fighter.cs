@@ -14,6 +14,9 @@ public class Fighter : MonoBehaviour
     private float minDamage = 5f;
     [SerializeField]
     private float maxDamage = 20f;
+    [SerializeField]
+    private float attackDuration = 1f;
+    public float AttackDuration => attackDuration;
 
     public void OnCharacterStart()
     {
