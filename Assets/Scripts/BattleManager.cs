@@ -18,7 +18,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField]
     private UnityEvent onBattleStop;
     private int currentFightIndex = 0;
-    public bool isBattleActive;
+    public bool isBattleActive = false;
+    private Coroutine attackCoroutine;
     
 
     public void AddFighter(Fighter fighter)
@@ -39,14 +40,18 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            StartBattle();
+            Invoke ("StartBattle", secondstoStartBattle);
         }
     }
     private void StartBattle()
     {
+        if (isBattleActive || fighters.Count < requieredFighters)
+        {
+            return;
+        }
         isBattleActive = true;
         onBattleStart?.Invoke();
-        StartCoroutine(Attack());
+        attackCoroutine = StartCoroutine(Attack());
     }
     private IEnumerator Attack()
     {
@@ -75,7 +80,7 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(secondsBetweenAttacks);
         if (defender.GetComponent<Health>().CurrentHealth > 0)
         {
-            StartCoroutine(Attack());
+            attackCoroutine = StartCoroutine(Attack());
         }
         else
         {
@@ -85,7 +90,11 @@ public class BattleManager : MonoBehaviour
     private void StopBattle()
     {
         isBattleActive = false;
-        StopCoroutine(Attack());
+        if (attackCoroutine != null)
+        {
+            StopCoroutine(attackCoroutine);
+            attackCoroutine = null;
+        }
         onBattleStop?.Invoke();
     }
 }
