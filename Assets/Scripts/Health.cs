@@ -7,7 +7,7 @@ public class Health : MonoBehaviour
     private int maxHealth = 100;
     [SerializeField]
     private UnityEvent<float> onHealthChange;
-
+    [SerializeField]
     private UnityEvent onDamageRecived;
     [SerializeField]
     private UnityEvent onDeath;
